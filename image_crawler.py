@@ -282,7 +282,6 @@ class ImageCrawler:
         <html>
         <head>
             <title>Image Crawler Results - {{timestamp}}</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
             <style>
                 :root {
@@ -344,8 +343,8 @@ class ImageCrawler:
                 
                 .image-container {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                    gap: 25px;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 20px;
                     margin-top: 20px;
                 }
                 
@@ -366,16 +365,20 @@ class ImageCrawler:
                 
                 .image-wrapper {
                     width: 100%;
-                    height: 200px;
-                    overflow: hidden;
+                    padding-bottom: 100%;
                     position: relative;
+                    overflow: hidden;
                 }
                 
                 .image-item img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
                     width: 100%;
                     height: 100%;
-                    object-fit: cover;
+                    object-fit: contain;
                     transition: var(--transition);
+                    background: #f5f5f5;
                 }
                 
                 .image-item:hover img {
@@ -441,15 +444,7 @@ class ImageCrawler:
                     height: 200px;
                 }
                 
-                @media (max-width: 768px) {
-                    .image-container {
-                        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                    }
-                    
-                    h1 {
-                        font-size: 2rem;
-                    }
-                }
+                /* Remove mobile-specific styles */
             </style>
         </head>
         <body>
@@ -477,34 +472,7 @@ class ImageCrawler:
                         }
                     });
                     
-                    // Add animation to images when they come into view
-                    const observer = new IntersectionObserver(function(entries) {
-                        try {
-                            entries.forEach(function(entry) {
-                                if (entry.isIntersecting) {
-                                    entry.target.style.opacity = 1;
-                                    entry.target.style.transform = 'translateY(0)';
-                                }
-                            });
-                        } catch (e) {
-                            console.error('Intersection observer error:', e);
-                        }
-                    }, {
-                        threshold: 0.1
-                    });
-                    
-                    // Initialize animations for all image items
-                    document.querySelectorAll('.image-item').forEach(function(item, index) {
-                        try {
-                            item.style.opacity = 0;
-                            item.style.transform = 'translateY(20px)';
-                            item.style.transition = 'opacity 0.5s ease ' + (index * 0.1) + 's, transform 0.5s ease ' + (index * 0.1) + 's';
-                            observer.observe(item);
-                        } catch (e) {
-                            console.error('Error initializing image item:', e);
-                            item.style.opacity = 1; // Ensure item is visible even if animation fails
-                        }
-                    });
+                    // Remove lazy loading and animations
                 } catch (e) {
                     console.error('Initialization error:', e);
                 }
@@ -520,7 +488,7 @@ class ImageCrawler:
                 <div class="image-item">
                     <div class="image-wrapper">
                         <span class="image-index">{idx}</span>
-                        <img src="{img_url}" alt="Image {idx}" onerror="this.parentElement.innerHTML='<div class=\'no-image\'>Image not available</div>'">
+                        <img src="{img_url}" alt="Image {idx}" loading="eager" onerror="this.parentElement.innerHTML='<div>Image not available</div>'">
                     </div>
                     <div class="image-details">
                         <div class="image-meta">
